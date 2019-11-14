@@ -1122,7 +1122,8 @@ except for when using the function decorator.
                 lineno += 1
         else:
             for i, line in enumerate(lines):
-                lines[i] = self._format_line(lineno, '', line, lineno_width)
+                # line.rstrip() because Windows will have extra CR/LF
+                lines[i] = self._format_line(lineno, '', line.rstrip(), lineno_width)
                 lineno += 1
         print('\n'.join(lines), file=self.stdout)
 
