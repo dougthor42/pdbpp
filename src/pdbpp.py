@@ -325,6 +325,12 @@ class Pdb(pdb.Pdb, ConfigurableClass, object):
     _in_interaction = False
 
     def __init__(self, *args, **kwds):
+        try:
+            import colorama
+            colorama.init()
+        except ImportError:
+            # No color support on Windows.
+            pass
         self.ConfigFactory = kwds.pop('Config', None)
         self.start_lineno = kwds.pop('start_lineno', None)
         self.start_filename = kwds.pop('start_filename', None)
