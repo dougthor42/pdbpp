@@ -386,8 +386,24 @@ The following means "reset all colors" (``0``), set foreground color to 18
 Constants are available via ``pdb.Color``, e.g. ``pdb.Color.red``
 (``"31;01"``), but in general any string can be used here.
 
+
+Development
+-----------
+
+To get a development environment up and running::
+
+   git clone https://github.com/pdbpp/pdbpp.git
+   cd pdbpp
+   python -m venv .venv
+   . .venv/bin/activate
+   pip install -U pip setuptools wheel
+   pip install tox==3.13.2
+   # Run tests
+   tox --force-dep="pytest @ git+https://github.com/blueyed/pytest.git@my-master;python_version>='3.5'"
+
+
 Coding guidelines
------------------
+^^^^^^^^^^^^^^^^^
 
 ``pdb++`` is developed using Test Driven Development, and we try to keep test
 coverage high.
