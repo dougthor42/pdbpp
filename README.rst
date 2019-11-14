@@ -401,6 +401,11 @@ To get a development environment up and running::
    # Run tests
    tox --force-dep="pytest @ git+https://github.com/blueyed/pytest.git@my-master;python_version>='3.5'"
 
+To develop on Windows, you'll need to have ``git`` in your ``%PATH%`` variable
+and need to change the ``tox`` line to::
+
+   tox --force-dep="pytest @ git+https://github.com/dougthor42/pytest.git@win;python_version>='3.5'"
+
 
 Coding guidelines
 ^^^^^^^^^^^^^^^^^
