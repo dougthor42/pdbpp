@@ -15,29 +15,47 @@ stages:
 
 jobs:
   include:
-    - name: 'py37 (osx)'
-      os: osx
-      osx_image: xcode10.2
-      env: TOXENV=py37-coverage
+    - name: Windows
+      os: windows
+      language: shell
       before_install:
-        - ln -sfn "$(which python3)" /usr/local/bin/python
-        - python -V
-        - test $(python -c 'import sys; print("%d%d" % sys.version_info[0:2])') = 37
-
-    - name: 'py36 + py35 + py34 + py27'
+        - choco install --no-progress python --version 3.8.0
       env:
-        - TOXENV=py34-coverage,py35-coverage,py36-coverage,py27-coverage
-        - INSTALL_PYTHON="python-3.5 python-3.4"
+        - PATH=/c/Python38:/c/Python38/Scripts:$PATH
+        - TOXENV=uses_custom_script
+        - PYTEST_ADDOPTS="$PYTEST_ADDOPTS --cov-append"
+      script:
+        - env
+        - python -m tox -e py38-coverage --force-dep="pytest @ git+https://github.com/blueyed/pytest.git@colorama"
+        - c:/users/travis/build/pdbpp/pdbpp/.tox/py38-coverage/scripts/python.exe t_windows.py
+        # Test without colorama (re-use same toxenv for performance reasons).
+        - .tox/py38-coverage/Scripts/python.exe -m pip uninstall -y colorama
+        - c:/users/travis/build/pdbpp/pdbpp/.tox/py38-coverage/scripts/python.exe t_windows.py
+        - python -m tox -e py38-coverage
 
-    - name: 'py38 + py37 + checkqa'
-      env:
-        - TOXENV=py38-coverage,py37-coverage,checkqa
-        - INSTALL_PYTHON="python-3.8"
-
-    - name: 'pypy3 + pypy'
-      env:
-        - TOXENV=pypy3-coverage,pypy-coverage
-        - INSTALL_PYTHON="pypy pypy3"
+    # - name: 'py37 (osx)'
+    #   os: osx
+    #   osx_image: xcode10.2
+    #   env: TOXENV=py37-coverage
+    #   before_install:
+    #     - ln -sfn "$(which python3)" /usr/local/bin/python
+    #     - python -V
+    #     - test $(python -c 'import sys; print("%d%d" % sys.version_info[0:2])') = 37
+    #
+    # - name: 'py36 + py35 + py34 + py27'
+    #   env:
+    #     - TOXENV=py34-coverage,py35-coverage,py36-coverage,py27-coverage
+    #     - INSTALL_PYTHON="python-3.5 python-3.4"
+    #
+    # - name: 'py38 + py37 + checkqa'
+    #   env:
+    #     - TOXENV=py38-coverage,py37-coverage,checkqa
+    #     - INSTALL_PYTHON="python-3.8"
+    #
+    # - name: 'pypy3 + pypy'
+    #   env:
+    #     - TOXENV=pypy3-coverage,pypy-coverage
+    #     - INSTALL_PYTHON="pypy pypy3"
 
     - stage: release
       name: 'release'
@@ -70,7 +88,6 @@ before_install:
     done
 
 install:
-  - pyenv versions
   - python --version
   - python -m pip install --user tox==3.13.2
   # NOTE: need to upgrade virtualenv to allow "Direct url requirement" with
