@@ -42,6 +42,16 @@ except ImportError:
             return ' [pip install funcsigs to show the signature]'
 
 
+has_colorama = False
+if sys.platform == "win32":
+    try:
+        import colorama
+        has_colorama = True
+    except ImportError:
+        # No windows support. Do we want to stop trying all coloring?
+        print("Please install 'colorama' for color support on Windows.")
+
+
 # If it contains only _, digits, letters, [] or dots, it's probably side
 # effects free.
 side_effects_free = re.compile(r'^ *[_0-9a-zA-Z\[\].]* *$')
