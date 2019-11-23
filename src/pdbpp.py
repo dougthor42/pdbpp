@@ -160,9 +160,19 @@ class DefaultConfig(object):
 
 
 def setbgcolor(line, color):
+    import re
+    # Windows/Colorama doesn't have the ANSI escape code 7 "reverse video",
+    # which swaps the foreground and background colors, so instead we just
+    # force black-on-white
+    if has_colorama:
+        # Strip all existing colors
+        line = re.sub(colorama.AnsiToWin32.ANSI_CSI_RE, "", line)
+        line_color = colorama.Fore.BLACK + colorama.Back.WHITE
+        line = line_color + line + colorama.Style.RESET_ALL
+        return line
+
     # hack hack hack
     # add a bgcolor attribute to all escape sequences found
-    import re
     setbg = '\x1b[%sm' % color
     regexbg = '\\1;%sm' % color
     result = setbg + re.sub('(\x1b\\[.*?)m', regexbg, line) + '\x1b[00m'
