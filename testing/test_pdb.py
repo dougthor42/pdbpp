@@ -225,13 +225,16 @@ def extract_commands(lines):
     return cmds
 
 
+COLORCURLINE = r'\^\[\[44m\^\[\[36;01;44m *[0-9]+\^\[\[00;44m'
+if sys.platform == "win32":
+    COLORCURLINE = r'\^\[\[30m\^\[\[47m *[0-9]+'
 shortcuts = [
     ('[', '\\['),
     (']', '\\]'),
     ('(', '\\('),
     (')', '\\)'),
     ('^', '\\^'),
-    ('<COLORCURLINE>', r'\^\[\[44m\^\[\[36;01;44m *[0-9]+\^\[\[00;44m'),
+    ('<COLORCURLINE>', COLORCURLINE),
     ('<COLORNUM>', r'\^\[\[36;01m *[0-9]+\^\[\[00m'),
     ('<COLORLNUM>', r'\^\[\[36;01m'),
     ('<COLORRESET>', r'\^\[\[0{1,2}m'),
