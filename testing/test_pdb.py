@@ -225,16 +225,18 @@ def extract_commands(lines):
     return cmds
 
 
+COLORCURLINE_START = r'\^\[\[44m\^\[\[36;01;44m'
+COLORCURLINE = COLORCURLINE_START + r' *[0-9]+\^\[\[00;44m'
 shortcuts = [
     ('[', '\\['),
     (']', '\\]'),
     ('(', '\\('),
     (')', '\\)'),
     ('^', '\\^'),
-    ('<COLORCURLINE>', r'\^\[\[44m\^\[\[36;01;44m *[0-9]+\^\[\[00;44m'),
+    ('<COLORCURLINE>', COLORCURLINE),
     ('<COLORNUM>', r'\^\[\[36;01m *[0-9]+\^\[\[00m'),
     ('<COLORLNUM>', r'\^\[\[36;01m'),
-    ('<COLORRESET>', r'\^\[\[00m'),
+    ('<COLORRESET>', r'\^\[\[0{1,2}m'),
     ('NUM', ' *[0-9]+'),
 ]
 
@@ -1639,7 +1641,7 @@ def test_truncated_source_with_pygments_and_highlight():
 <COLORNUM> +           a ^[[38;5;241m=^[[39m ^[[38;5;241m1^[[39m
 <COLORNUM> +           set_trace(Config^[[38;5;241m=^[[39mConfigWithPygmentsAndHighlight)
 <COLORNUM> +$
-<COLORCURLINE> +->         ^[[38;5;28;01;44mreturn^[[39;00;44m a                                                       ^[[00m
+<COLORCURLINE> +->         ^[[38;5;28;01;44mreturn^[[39;00;44m a                                                       <COLORRESET>
 # c
 """.format(line_num=fn.__code__.co_firstlineno - 1))  # noqa: E501
 
@@ -1778,7 +1780,7 @@ def test_longlist_with_highlight():
 <COLORNUM>         def fn():
 <COLORNUM>             a = 1
 <COLORNUM>             set_trace(Config=ConfigWithHighlight)
-<COLORCURLINE> +->         return a                                                       ^[[00m$
+<COLORCURLINE> +->         return a                                                       <COLORRESET>
 # c
 """)  # noqa: E501
 
@@ -2179,7 +2181,7 @@ def test_sticky_dunder_return_with_highlight():
 
     colored_cur_lines = [
         x for x in lines
-        if x.startswith('^[[44m^[[36;01;44m') and '->' in x
+        if re.match(COLORCURLINE_START, x) is not None and '->' in x
     ]
     assert len(colored_cur_lines) == 2
 
