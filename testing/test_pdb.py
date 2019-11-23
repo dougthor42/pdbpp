@@ -225,9 +225,11 @@ def extract_commands(lines):
     return cmds
 
 
-COLORCURLINE = r'\^\[\[44m\^\[\[36;01;44m *[0-9]+\^\[\[00;44m'
+COLORCURLINE_START = r'\^\[\[44m\^\[\[36;01;44m'
+COLORCURLINE = COLORCURLINE_START + r' *[0-9]+\^\[\[00;44m'
 if sys.platform == "win32":
-    COLORCURLINE = r'\^\[\[30m\^\[\[47m *[0-9]+'
+    COLORCURLINE_START = r'\^\[\[30m\^\[\[47m'
+    COLORCURLINE = COLORCURLINE_START + r' *[0-9]+'
 shortcuts = [
     ('[', '\\['),
     (']', '\\]'),
@@ -2182,7 +2184,7 @@ def test_sticky_dunder_return_with_highlight():
 
     colored_cur_lines = [
         x for x in lines
-        if x.startswith('^[[44m^[[36;01;44m') and '->' in x
+        if re.match(COLORCURLINE_START, x) is not None and '->' in x
     ]
     assert len(colored_cur_lines) == 2
 
