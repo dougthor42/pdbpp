@@ -168,6 +168,21 @@ def setbgcolor(line, color):
         # Strip all existing colors
         line = re.sub(colorama.AnsiToWin32.ANSI_CSI_RE, "", line)
         line_color = colorama.Fore.BLACK + colorama.Back.WHITE
+        # Hack to remove the linewrap. Not sure why it happens...
+        # During a sticky, the current line looks like so (vertical bars
+        # denote the edge of the cmd/powershell window):
+        #   | 2         import pdb; pdb.set_trace()     |
+        #   | 3  ->     a = 1                           |
+        #   |                                           |
+        #   | 4         b = 2                           |
+        # Simply resizing the terminal a little wider results in:
+        #   | 2         import pdb; pdb.set_trace()      |
+        #   | 3  ->     a = 1                            |
+        #   | 4         b = 2                            |
+        # So I figure we just strip off the last space. /shrug.
+        line = line[:-1] if line[-1] == " " else line
+
+        # Add the formatting.
         line = line_color + line + colorama.Style.RESET_ALL
         return line
 

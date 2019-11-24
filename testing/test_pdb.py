@@ -1783,7 +1783,7 @@ def test_longlist_with_highlight():
 <COLORNUM>         def fn():
 <COLORNUM>             a = 1
 <COLORNUM>             set_trace(Config=ConfigWithHighlight)
-<COLORCURLINE> +->         return a                                                       <COLORRESET>
+<COLORCURLINE> +->         return a                                                       ?<COLORRESET>
 # c
 """)  # noqa: E501
 
