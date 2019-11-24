@@ -42,11 +42,11 @@ except ImportError:
             return ' [pip install funcsigs to show the signature]'
 
 
-has_colorama = False
+has_colorama_on_windows = False
 if sys.platform == "win32":
     try:
         import colorama
-        has_colorama = True
+        has_colorama_on_windows = True
     except ImportError:
         # No windows support. Do we want to stop trying all coloring?
         print("Please install 'colorama' for color support on Windows.")
@@ -164,7 +164,7 @@ def setbgcolor(line, color):
     # Windows/Colorama doesn't have the ANSI escape code 7 "reverse video",
     # which swaps the foreground and background colors, so instead we just
     # force black-on-white
-    if has_colorama:
+    if has_colorama_on_windows:
         # Strip all existing colors
         line = re.sub(colorama.AnsiToWin32.ANSI_CSI_RE, "", line)
         line_color = colorama.Fore.BLACK + colorama.Back.WHITE
@@ -345,7 +345,7 @@ class Pdb(pdb.Pdb, ConfigurableClass, object):
     _in_interaction = False
 
     def __init__(self, *args, **kwds):
-        if has_colorama:
+        if has_colorama_on_windows:
             # Do not strip the ANSI codes - they don't do anything on Windows
             # and stripping them would mean updating many tests.
             colorama.init(strip=False)
