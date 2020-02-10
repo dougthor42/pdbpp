@@ -42,9 +42,6 @@ except ImportError:
             return ' [pip install funcsigs to show the signature]'
 
 
-has_colorama_on_windows = False
-
-
 # If it contains only _, digits, letters, [] or dots, it's probably side
 # effects free.
 side_effects_free = re.compile(r'^ *[_0-9a-zA-Z\[\].]* *$')
@@ -344,7 +341,6 @@ class Pdb(pdb.Pdb, ConfigurableClass, object):
         if sys.platform == "win32":
             try:
                 import colorama
-                has_colorama_on_windows = True
                 # Do not strip the ANSI codes - they don't do anything on Windows
                 # and stripping them would mean updating many tests.
                 colorama.init(strip=False)
